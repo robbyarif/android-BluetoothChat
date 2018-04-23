@@ -45,12 +45,15 @@ public class BluetoothChatService {
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
     private static final String NAME_INSECURE = "BluetoothChatInsecure";
+    private static final String NAME_SPP = "BluetoothChatSPP";
 
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
             UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
     private static final UUID MY_UUID_INSECURE =
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    private static final UUID MY_SPP_UUID =
+            UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
 
     // Member fields
     private final BluetoothAdapter mAdapter;
@@ -310,13 +313,15 @@ public class BluetoothChatService {
 
             // Create a new listening server socket
             try {
-                if (secure) {
-                    tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
-                            MY_UUID_SECURE);
-                } else {
-                    tmp = mAdapter.listenUsingInsecureRfcommWithServiceRecord(
-                            NAME_INSECURE, MY_UUID_INSECURE);
-                }
+                // Bypass this if block to use SPP
+//                if (secure) {
+//                    tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE,
+//                            MY_UUID_SECURE);
+//                } else {
+//                    tmp = mAdapter.listenUsingInsecureRfcommWithServiceRecord(
+//                            NAME_INSECURE, MY_UUID_INSECURE);
+//                }
+                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SPP, MY_SPP_UUID);
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
             }
@@ -398,13 +403,14 @@ public class BluetoothChatService {
             // Get a BluetoothSocket for a connection with the
             // given BluetoothDevice
             try {
-                if (secure) {
-                    tmp = device.createRfcommSocketToServiceRecord(
-                            MY_UUID_SECURE);
-                } else {
-                    tmp = device.createInsecureRfcommSocketToServiceRecord(
-                            MY_UUID_INSECURE);
-                }
+//                if (secure) {
+//                    tmp = device.createRfcommSocketToServiceRecord(
+//                            MY_UUID_SECURE);
+//                } else {
+//                    tmp = device.createInsecureRfcommSocketToServiceRecord(
+//                            MY_UUID_INSECURE);
+//                }
+                tmp = device.createRfcommSocketToServiceRecord(MY_SPP_UUID);
             } catch (IOException e) {
                 Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
             }
